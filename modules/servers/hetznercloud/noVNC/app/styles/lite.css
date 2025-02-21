@@ -1,0 +1,81 @@
+/*
+ * noVNC auto CSS
+ * Copyright (C) 2012 Joel Martin
+ * Copyright (C) 2017 Samuel Mannehed for Cendio AB
+ * noVNC is licensed under the MPL 2.0 (see LICENSE.txt)
+ * This file is licensed under the 2-Clause BSD license (see LICENSE.txt).
+ */
+
+/*
+body {
+  margin:0;
+  background-color:#313131;
+  border-bottom-right-radius: 800px 600px;
+  height:100%;
+  display: flex;
+  flex-direction: column;
+}
+
+html {
+  background-color:#494949;
+  height:100%;
+}
+*/
+#noVNC_status_bar,
+.noVNC_status_bar_top{
+  width: 100%;
+  display:flex;
+  justify-content: space-between;
+}
+
+#noVNC_status,
+#noVNC_status_top{
+  padding: 5px;
+  color: #fff;
+  font: bold 12px Helvetica;
+  margin: auto;
+  text-align: center;
+}
+
+.noVNC_status_normal,
+.noVNC_status_normal_top{
+  background: linear-gradient(#b2bdcd 0%,#899cb3 49%,#7e93af 51%,#6e84a3 100%);
+}
+
+.noVNC_status_error,
+.noVNC_status_error_top{
+  background: linear-gradient(#c83737 0%,#899cb3 49%,#7e93af 51%,#6e84a3 100%);
+}
+
+.noVNC_status_warn,
+.noVNC_status_warn_top{
+  background: linear-gradient(#b4b41e 0%,#899cb3 49%,#7e93af 51%,#6e84a3 100%);
+}
+
+.noVNC_shown {
+  display: inline;
+}
+.noVNC_hidden {
+  display: none;
+}
+
+#noVNC_left_dummy_elem {
+  flex: 1;
+}
+
+#noVNC_buttons {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.no-vnc-btn {
+    background-image: red!important;
+    border: none!important;
+    border-radius: 0!important;
+}
+
+.mg-vnc-wrapper {
+    margin-bottom: 30px;
+}

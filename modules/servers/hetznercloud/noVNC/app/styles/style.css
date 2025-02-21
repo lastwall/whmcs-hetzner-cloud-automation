@@ -1,0 +1,84 @@
+.noVNC_status_normal, .noVNC_status_normal_top{
+    background: none;
+}
+.noVNC_status_error, .noVNC_status_error_top{
+    background: none;
+}
+.noVNC_status_warn, .noVNC_status_warn_top{
+    background: none;
+}
+
+#noVNC_status, #noVNC_status_top{
+    font: 200 14px "Roboto", sans-serif;
+    font-weight: bold;
+    color: #000;
+}
+
+.hcloud{margin: 6px 0;}
+
+.btns {
+
+    position: relative;
+    display: -webkit-inline-box;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    transition: border-color 0.3s, background 0.3s, color 0.3s;
+    vertical-align: top;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    outline: 0;
+    box-shadow: none;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+    padding: 0 15px;
+    height: 36px;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+
+}
+
+.hcloud-vnc-wrapper {
+
+    padding: 0px;
+    margin-bottom: 0px;
+    width: 100%;
+
+}
+
+.widget-body {
+
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -webkit-box-flex: 1;
+    flex: 1 0 auto;
+
+}
+
+#layers {
+
+    color: #505459;
+    font-family: "Roboto", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+
+}
+
+.widget-body{
+
+    border-width: 0 0 1px 0;
+        border-top-width: 0px;
+    border-style: solid;
+        border-top-style: solid;
+    border-color: #e9ebf0;
+        border-top-color: rgb(233, 235, 240);
+
+}
