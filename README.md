@@ -25,7 +25,7 @@ A **WHMCS provisioning module** for **Hetzner Cloud**, allowing automated **serv
 
 ---
 ## **🌟 In Progress**
-🔜** Rebuild Server **
+🔜 **Rebuild Server**
 
 🔜**Reset Password**
 
