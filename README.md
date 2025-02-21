@@ -39,7 +39,7 @@ A **WHMCS provisioning module** for **Hetzner Cloud**, allowing automated **serv
 Follow these steps to install and configure the module in WHMCS.
 
 ### **1️⃣ Download & Upload**
-1. **Download the latest release** from [GitHub Releases](https://github.com/lastwall/whmcs-hetzner-cloud/releases)
+1. **Download the latest release** from [GitHub Releases](https://github.com/lastwall/whmcs-hetzner-cloud-automation/releases/tag/release)
 2. Extract and **upload** the module folder to:  
    ```
    WHMCS installation root/modules/servers/hetznercloud
