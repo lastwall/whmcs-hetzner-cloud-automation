@@ -8,7 +8,8 @@ A **WHMCS provisioning module** for **Hetzner Cloud**, allowing automated **serv
 ![WHMCS Hetzner Cloud Module](modules/servers/hetznercloud/img/screenshot1.PNG)
 
 
- [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![Stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud.svg?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+ [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![GitHub stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud-automation?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+
 
 
 ## **🌟 Features Done**
