@@ -1,24 +1,38 @@
+
 # ☁️ WHMCS Hetzner Cloud Module
-<center>
-![WHMCS Hetzner Cloud Module](modules/servers/hetznercloud/img/screenshot1.PNG)
-![Hetzner Logo](modules/servers/hetznercloud/img/hetzner-logo.svg)
-[![License](https://img.shields.io/github/license/lastwall/whmcs-hetzner-cloud.svg)](LICENSE)[![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)[![Stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud.svg?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud/stargazers)
-</center>
+
 A **WHMCS provisioning module** for **Hetzner Cloud**, allowing automated **server creation, Console, management, and termination** directly from WHMCS.
+
+
+
+![WHMCS Hetzner Cloud Module](modules/servers/hetznercloud/img/screenshot1.PNG)
+
+
+ [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![Stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud.svg?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+
 
 ## **🌟 Features Done**
 ✅ **Automatic Server Creation**
+
 ✅ **Auto-Suspend & Terminate**
+
 ✅ **Custom Server Configurations**
+
 ✅ **WHMCS Admin Panel Integration**
+
 ✅ **noVNC Console Integration**
 
 ---
 ## **🌟 In Progress**
 🔜** Rebuild Server **
+
 🔜**Reset Password**
+
 🔜**Upgrade/Downgrade Server**
+
 🔜**Network Graphs & Usage Stats**
+
+
 
 ## **📖 Installation Guide**
 Follow these steps to install and configure the module in WHMCS.
@@ -91,10 +105,12 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 ---
 
 ## **🌍 Connect With Me**
+
 📢 **GitHub:** [github.com/lastwall](https://github.com/lastwall)  
 
 
 ---
 
 ⭐ **If you use this module useful, please give it a star!** ⭐
+
 ⚠️ **If There is any bug let me know** ⚠️
