@@ -89,7 +89,7 @@ function hetznercloud_GetServerTypes()
     $response = hetznercloud_API_Request('GET', 'server_types', '', '', '');
 
     if ($response['success'] && isset($response['data']['server_types'])) {
-        $serverTypes = array_map(fn($type) => $type['name'], $response['data']['server_types']);
+        $serverTypes = array_map(function($type) { return $type['name']; }, $response['data']['server_types']);
 
         // Cache results
         file_put_contents($cacheFile, json_encode($serverTypes));
