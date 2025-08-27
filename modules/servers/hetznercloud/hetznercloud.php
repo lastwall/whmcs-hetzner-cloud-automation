@@ -55,6 +55,8 @@ function hetznercloud_ClientAreaCustomButtonArray()
         "Power On" => "PowerOn",
         "Power Off" => "PowerOff",
         "Reboot" => "Reboot",
+        "Rebuild" => "Rebuild",
+        "Reset Password" => "ResetPassword",
     ];
 }
 

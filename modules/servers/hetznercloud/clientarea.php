@@ -23,6 +23,26 @@ function hetznercloud_ClientAreaOutput($params)
         exit; // Stop further execution
     }
 
+    // Handle AJAX request for metrics
+    if (isset($_GET['ajax']) && $_GET['ajax'] === 'metrics') {
+        $metricsResponse = hetznercloud_GetUsageMetrics($params);
+        if ($metricsResponse['success'] && isset($metricsResponse['data']['metrics']['time_series'])) {
+            $parsed = [];
+            foreach ($metricsResponse['data']['metrics']['time_series'] as $series) {
+                $label = $series['label'];
+                $parsed[$label] = [
+                    'times'  => array_column($series['values'], 0),
+                    'values' => array_column($series['values'], 1),
+                    'unit'   => $series['unit']
+                ];
+            }
+            echo json_encode(['success' => true, 'metrics' => $parsed]);
+        } else {
+            echo json_encode(['success' => false, 'message' => $metricsResponse['message'] ?? 'Failed to fetch metrics']);
+        }
+        exit;
+    }
+
     // Fetch required data
     $statusInfo = hetznercloud_GetServerStatus($params);
     $serverInfo = hetznercloud_GetServerDetails($params);

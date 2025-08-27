@@ -95,6 +95,15 @@
         margin-top: 20px;
     }
 
+    .usage-graphs {
+        margin-top: 30px;
+    }
+
+    .usage-graphs canvas {
+        max-width: 100%;
+        margin-top: 20px;
+    }
+
     /* Modal Styles */
     .modal {
         display: none;
@@ -147,6 +156,8 @@
         border: none;
     }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="server-management">
     <h3><i class="fa fa-server"></i> Server Management</h3>
@@ -202,7 +213,20 @@
             <button type="submit" name="a" value="Reboot" class="btn btn-warning">
                 <i class="fa fa-sync"></i> Reboot
             </button>
+            <button type="submit" name="a" value="Rebuild" class="btn btn-info">
+                <i class="fa fa-wrench"></i> Rebuild
+            </button>
+            <button type="submit" name="a" value="ResetPassword" class="btn btn-secondary">
+                <i class="fa fa-key"></i> Reset Password
+            </button>
         </form>
+    </div>
+
+    <!-- Usage Graphs -->
+    <div class="usage-graphs">
+        <h4>Usage</h4>
+        <canvas id="cpuChart"></canvas>
+        <canvas id="bandwidthChart"></canvas>
     </div>
 </div>
 
@@ -220,6 +244,33 @@
 </div>
 
 <script>
+    const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+    const bandwidthCtx = document.getElementById('bandwidthChart').getContext('2d');
+    let cpuChart = new Chart(cpuCtx, {type: 'line', data: {labels: [], datasets: [{label: 'CPU %', data: []}]}});
+    let bandwidthChart = new Chart(bandwidthCtx, {type: 'line', data: {labels: [], datasets: [{label: 'Bandwidth Bps', data: []}]}});
+
+    function fetchMetrics() {
+        $.ajax({
+            url: 'clientarea.php?action=productdetails&id={$serviceid}&ajax=metrics',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    if (response.metrics.cpu) {
+                        cpuChart.data.labels = response.metrics.cpu.times;
+                        cpuChart.data.datasets[0].data = response.metrics.cpu.values;
+                        cpuChart.update();
+                    }
+                    if (response.metrics.network) {
+                        bandwidthChart.data.labels = response.metrics.network.times;
+                        bandwidthChart.data.datasets[0].data = response.metrics.network.values;
+                        bandwidthChart.update();
+                    }
+                }
+            }
+        });
+    }
+
     function openConsole() {
         var consoleUrl = "{$consoleLink}";
         if (consoleUrl) {
@@ -252,8 +303,8 @@
             console.error('Failed to copy text: ', err);
         });
     }
-    
-        function updateServerStatus() {
+
+    function updateServerStatus() {
         $.ajax({
             url: 'clientarea.php?action=productdetails&id={$serviceid}&ajax=status',
             type: 'GET',
@@ -262,7 +313,7 @@
                 if (response.success) {
                     // Update status message
                     $('.status-indicator span').text(response.statusMessage);
-                    
+
                     // Update status color
                     $('.status-indicator div').css('background-color', response.statusColor);
                 }
@@ -273,8 +324,10 @@
         });
     }
 
-    // Refresh status every 5 seconds
+    // Refresh status every 5 seconds and metrics every minute
     setInterval(updateServerStatus, 5000);
+    fetchMetrics();
+    setInterval(fetchMetrics, 60000);
 </script>
 
 

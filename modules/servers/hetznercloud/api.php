@@ -16,6 +16,13 @@ function hetznercloud_API_Request($method, $endpoint, $params, $serverID = null,
         $url = "https://api.hetzner.cloud/v1/servers";
     } elseif ($endpoint === 'server_types') {
         $url = "https://api.hetzner.cloud/v1/server_types"; // Fetch server types
+    } elseif ($method === 'GET' && $endpoint === 'metrics') {
+        if (!$serverID) {
+            return ['success' => false, 'message' => 'Server ID is missing'];
+        }
+        $query = http_build_query($postData);
+        $url = "https://api.hetzner.cloud/v1/servers/{$serverID}/metrics?{$query}";
+        $postData = [];
     } elseif (!$serverID) {
         return ['success' => false, 'message' => 'Server ID is missing'];
     } elseif ($method === 'GET' && $endpoint === 'server_details') {
@@ -39,11 +46,7 @@ function hetznercloud_API_Request($method, $endpoint, $params, $serverID = null,
 
     // Handle POST requests
     if ($method === 'POST') {
-        if ($endpoint === 'create_server') {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-        } else {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, '{}'); // Empty JSON object for other POST requests
-        }
+        curl_setopt($ch, CURLOPT_POSTFIELDS, !empty($postData) ? json_encode($postData) : '{}');
     }
 
     $response = curl_exec($ch);

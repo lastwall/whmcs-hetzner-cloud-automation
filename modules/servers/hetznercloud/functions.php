@@ -298,6 +298,78 @@ function hetznercloud_Reboot($params)
 }
 
 /**
+ * Rebuild Server with current image
+ */
+function hetznercloud_Rebuild($params)
+{
+    $serverID = $params['customfields']['serverID'] ?? null;
+    $image = $params['customfields']['os_image'] ?? null;
+
+    if (!$serverID) {
+        return "Error: Server ID is missing!";
+    }
+
+    $postData = [];
+    if ($image) {
+        $postData['image'] = $image;
+    }
+
+    $response = hetznercloud_API_Request('POST', 'rebuild', $params, $serverID, $postData);
+
+    return $response['success'] ? 'success' : $response['message'];
+}
+
+/**
+ * Reset root password for the server
+ */
+function hetznercloud_ResetPassword($params)
+{
+    $serverID = $params['customfields']['serverID'] ?? null;
+    if (!$serverID) {
+        return "Error: Server ID is missing!";
+    }
+
+    $response = hetznercloud_API_Request('POST', 'reset_password', $params, $serverID);
+
+    if ($response['success'] && isset($response['data']['root_password'])) {
+        // Save the new password in WHMCS
+        update_query('tblhosting', [
+            'username' => 'root',
+            'password' => encrypt($response['data']['root_password'])
+        ], [
+            'id' => $params['serviceid']
+        ]);
+        return 'success';
+    }
+
+    return $response['success'] ? 'success' : $response['message'];
+}
+
+/**
+ * Fetch usage metrics for graphs
+ */
+function hetznercloud_GetUsageMetrics($params)
+{
+    $serverID = $params['customfields']['serverID'] ?? null;
+    if (!$serverID) {
+        return ['success' => false, 'message' => 'Server ID is missing'];
+    }
+
+    $end = time();
+    $start = $end - 3600; // last hour
+    $query = [
+        'type' => 'cpu,disk,cpu_rate,network',
+        'start' => gmdate('c', $start),
+        'end' => gmdate('c', $end),
+        'step' => 60
+    ];
+
+    $response = hetznercloud_API_Request('GET', 'metrics', $params, $serverID, $query);
+
+    return $response;
+}
+
+/**
  * Get Server Status from Hetzner Cloud
  */
 function hetznercloud_GetServerStatus($params)

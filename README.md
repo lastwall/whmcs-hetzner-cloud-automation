@@ -23,15 +23,15 @@ A **WHMCS provisioning module** for **Hetzner Cloud**, allowing automated **serv
 
 ✅ **noVNC Console Integration**
 
+✅ **Rebuild Server**
+
+✅ **Reset Password**
+
+✅ **Network Graphs & Usage Stats**
+
 ---
 ## **🌟 In Progress**
-🔜 **Rebuild Server**
-
-🔜**Reset Password**
-
 🔜**Upgrade/Downgrade Server**
-
-🔜**Network Graphs & Usage Stats**
 
 
 
