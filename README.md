@@ -1,39 +1,41 @@
 
-# ☁️ WHMCS Hetzner Cloud Module
+# ☁️ Free WHMCS Hetzner Cloud Module (OpenSource)
 
-A **WHMCS provisioning module** for **Hetzner Cloud**, allowing automated **server creation, Console, management, and termination** directly from WHMCS.
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/releases/tag/v2.0.0) [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![GitHub stars](https://img.shields.io/badge/github-stars-10-brightgreen.svg)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
 
-
+A **comprehensive WHMCS provisioning module** for **Hetzner Cloud**, providing automated **server creation, management, monitoring, and termination** directly from WHMCS with advanced features and professional UI.
 
 ![WHMCS Hetzner Cloud Module](modules/servers/hetznercloud/img/screenshot1.PNG)
 
+## **🌟 Core Features**
+✅ **Automatic Server Creation & Management**
 
- [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![GitHub stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud-automation?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+✅ **Advanced Power Operations** (Power On/Off, Reboot, Shutdown)
 
+✅ **Web Console Integration** (noVNC) for direct server access
 
+✅ **Auto-Suspend & Terminate** services
 
-## **🌟 Features Done**
-✅ **Automatic Server Creation**
+## **🌟 New Version 2 Features 🔥**
 
-✅ **Auto-Suspend & Terminate**
+✅ **Server Rebuild & OS Management** with ISO support 🆕
 
-✅ **Custom Server Configurations**
+✅ **Real-time Performance Monitoring** with interactive charts 🆕
 
-✅ **WHMCS Admin Panel Integration**
+✅ **Live Status Monitoring** with heartbeat indicators 🆕
 
-✅ **noVNC Console Integration**
+✅ **Password Reset & Security Management** 🆕
 
----
-## **🌟 In Progress**
-🔜 **Rebuild Server**
+✅ **Rebuild Responsive Design** 🆕
 
-🔜**Reset Password**
-
-🔜**Upgrade/Downgrade Server**
-
-🔜**Network Graphs & Usage Stats**
-
-
+##
+![WHMCS Hetzner Cloud Module Monitoring & Analytics](modules/servers/hetznercloud/img/screenshot2.PNG)
+## **📊 Monitoring & Analytics**
+- **Real-time Metrics**: CPU, Disk I/O, Network performance
+- **Interactive Charts**: Chart.js powered visualizations
+- **Multiple Time Ranges**: 1 hour to 30 days historical data
+- **Live Updates**: Automatic refresh with status indicators
+- **Resource Usage**: Current consumption with detailed tooltips
 
 ## **📖 Installation Guide**
 Follow these steps to install and configure the module in WHMCS.
@@ -70,14 +72,19 @@ Go to **Setup → Products/Services → Custom Fields** and create:
 | `serverID` | Text Box | No(Only Admin) | Stores the Hetzner Cloud Server ID |
 | `location` | Dropdown | Yes | Available Hetzner datacenters (e.g., fsn1, nbg1, hel1) |
 | `os_image` | Dropdown | Yes | Available OS images (e.g., ubuntu-22.04, debian-11, centos-8) |
----
 
-## **⚡ Usage**
-- **Clients** can order a **Hetzner Cloud server** from WHMCS  
-- **WHMCS will automatically provision the server** via the Hetzner API  
-- **Suspend/Terminate actions** will also be handled automatically  
+## **⚡ Usage & Features**
+- **Clients** can order and manage **Hetzner Cloud servers** from WHMCS  
+- **Real-time monitoring** with performance metrics and status updates
+- **Web console access** for direct server management
+- **Advanced server operations** including rebuild, ISO management, and password reset
+- **Automatic provisioning** and lifecycle management via Hetzner API
 
----
+## **🔧 Technical Requirements**
+- WHMCS 8.0 or higher
+- PHP 7.4 or higher  
+- cURL extension enabled
+- Hetzner Cloud API token
 
 ## **💡 Troubleshooting**
 ### **1️⃣ Debugging API Errors**
@@ -93,8 +100,6 @@ serverID
 ```
 If the issue persists, check the **WHMCS Activity Log**.
 
----
-
 ## **📌 Contributing**
 We welcome contributions! Follow these steps to contribute:  
 
@@ -103,12 +108,45 @@ We welcome contributions! Follow these steps to contribute:
 ## **📜 License**
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
+## **🔄 Version History**
+
+### **v2.0.0 (Current)**
+- Complete UI redesign with responsive layout
+- Real-time metrics and live status updates
+- Advanced charting with Chart.js integration
+- Optimized API client with improved performance
+- Mobile-first responsive design
+- Live heartbeat status indicators
+- Comprehensive error handling and logging
+- Web console integration (noVNC)
+- Advanced server operations (rebuild, ISO management, password reset)
+- **Centralized versioning system** for easy updates
+
+### **v1.0.0**
+- Basic server management functionality
+- Simple status monitoring
+- Basic power controls
+- Initial WHMCS integration
+
+## **📝 Version Management**
+
+The module uses a **centralized versioning system** for easy maintenance:
+
+- **Single source of truth**: `modules/servers/hetznercloud/version.php`
+- **Quick updates**: Use `php update-version.php <new_version>` script
+- **Automatic sync**: Version updates across all files automatically
+
+**To update version:**
+```bash
+cd modules/servers/hetznercloud
+php update-version.php 2.1.0
+```
+
 ---
 
 ## **🌍 Connect With Me**
 
 📢 **GitHub:** [github.com/lastwall](https://github.com/lastwall)  
-
 
 ---
 

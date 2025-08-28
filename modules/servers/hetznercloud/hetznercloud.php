@@ -4,6 +4,7 @@ if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }
 
+require_once __DIR__ . '/version.php';
 require_once __DIR__ . '/api.php';
 require_once __DIR__ . '/functions.php';
 
@@ -13,8 +14,14 @@ require_once __DIR__ . '/functions.php';
 function hetznercloud_MetaData()
 {
     return [
-        'DisplayName' => 'Hetzner Cloud Server Automation',
+        'DisplayName' => HETZNERCLOUD_VERSION_NAME,
         'APIVersion' => '1.0',
+        'RequiresServer' => false,
+        'ServiceSingleSignOnLabel' => false,
+        'AdminSingleSignOnLabel' => false,
+        'Version' => HETZNERCLOUD_VERSION,
+        'Author' => HETZNERCLOUD_VERSION_AUTHOR,
+        'Description' => HETZNERCLOUD_VERSION_DESC,
     ];
 }
 
@@ -55,6 +62,9 @@ function hetznercloud_ClientAreaCustomButtonArray()
         "Power On" => "PowerOn",
         "Power Off" => "PowerOff",
         "Reboot" => "Reboot",
+        "Rebuild OS" => "RebuildOS",
+        "Reset Password" => "ResetPassword",
+        "View Metrics" => "ViewMetrics",
     ];
 }
 
