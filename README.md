@@ -131,20 +131,6 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - Basic power controls
 - Initial WHMCS integration
 
-## **📝 Version Management**
-
-The module uses a **centralized versioning system** for easy maintenance:
-
-- **Single source of truth**: `modules/servers/hetznercloud/version.php`
-- **Quick updates**: Use `php update-version.php <new_version>` script
-- **Automatic sync**: Version updates across all files automatically
-
-**To update version:**
-```bash
-cd modules/servers/hetznercloud
-php update-version.php 2.1.0
-```
-
 ---
 
 ## **🌍 Connect With Me**
