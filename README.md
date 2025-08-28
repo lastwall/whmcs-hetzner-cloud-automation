@@ -1,7 +1,10 @@
 
 # ☁️ Free WHMCS Hetzner Cloud Module (OpenSource)
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/releases/tag/v2.0.0) [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![GitHub stars](https://img.shields.io/badge/github-stars-10-brightgreen.svg)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+[![Latest release](https://img.shields.io/github/v/release/lastwall/whmcs-hetzner-cloud-automation?style=flat&color=blue)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/releases)
+[![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)
+[![GitHub stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud-automation?style=flat&color=brightgreen)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)[![Star](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud-automation?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+
 
 A **comprehensive WHMCS provisioning module** for **Hetzner Cloud**, providing automated **server creation, management, monitoring, and termination** directly from WHMCS with advanced features and professional UI.
 
