@@ -123,7 +123,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - Comprehensive error handling and logging
 - Web console integration (noVNC)
 - Advanced server operations (rebuild, ISO management, password reset)
-- **Centralized versioning system** for easy updates
+- versioning system
 
 ### **v1.0.0**
 - Basic server management functionality
