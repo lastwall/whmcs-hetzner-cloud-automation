@@ -16,7 +16,7 @@ function hetznercloud_MetaData()
     return [
         'DisplayName' => HETZNERCLOUD_VERSION_NAME,
         'APIVersion' => '1.0',
-        'RequiresServer' => false,
+        'RequiresServer' => true,
         'ServiceSingleSignOnLabel' => false,
         'AdminSingleSignOnLabel' => false,
         'Version' => HETZNERCLOUD_VERSION,
