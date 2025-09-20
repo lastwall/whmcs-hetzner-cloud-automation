@@ -1,7 +1,10 @@
 
 # ☁️ Free WHMCS Hetzner Cloud Module (OpenSource)
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/releases/tag/v2.0.0) [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)  [![GitHub stars](https://img.shields.io/badge/github-stars-10-brightgreen.svg)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+[![Latest release](https://img.shields.io/github/v/release/lastwall/whmcs-hetzner-cloud-automation?style=flat&color=blue)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/releases)
+[![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](#-contributing)
+[![GitHub stars](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud-automation?style=flat&color=brightgreen)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)[![Star](https://img.shields.io/github/stars/lastwall/whmcs-hetzner-cloud-automation?style=social)](https://github.com/lastwall/whmcs-hetzner-cloud-automation/stargazers)
+
 
 A **comprehensive WHMCS provisioning module** for **Hetzner Cloud**, providing automated **server creation, management, monitoring, and termination** directly from WHMCS with advanced features and professional UI.
 
@@ -120,27 +123,13 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - Comprehensive error handling and logging
 - Web console integration (noVNC)
 - Advanced server operations (rebuild, ISO management, password reset)
-- **Centralized versioning system** for easy updates
+- versioning system
 
 ### **v1.0.0**
 - Basic server management functionality
 - Simple status monitoring
 - Basic power controls
 - Initial WHMCS integration
-
-## **📝 Version Management**
-
-The module uses a **centralized versioning system** for easy maintenance:
-
-- **Single source of truth**: `modules/servers/hetznercloud/version.php`
-- **Quick updates**: Use `php update-version.php <new_version>` script
-- **Automatic sync**: Version updates across all files automatically
-
-**To update version:**
-```bash
-cd modules/servers/hetznercloud
-php update-version.php 2.1.0
-```
 
 ---
 
