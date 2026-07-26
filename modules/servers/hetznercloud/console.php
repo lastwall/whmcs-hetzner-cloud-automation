@@ -1,213 +1,272 @@
 <?php
-$data = base64_decode($_GET["tokens"]);
-$explodeData = explode("_&_", $data);
+/**
+ * noVNC console page.
+ *
+ * The WebSocket URL and console password never reach the browser as query
+ * parameters: hetznercloud_Console() puts them in the PHP session and this page
+ * reads them back after WHMCS has authenticated the request.
+ */
 
-//Finding Host value
-$hostVal = explode("host=", $explodeData[0])[1];
-$passwordVal = explode("=", $explodeData[1])[1];
-?>
-<!DOCTYPE html>
-<html>
+require_once __DIR__ . '/../../../init.php';
+require_once __DIR__ . '/version.php';
+require_once __DIR__ . '/api.php';
+require_once __DIR__ . '/storage.php';
+
+$serviceId = (int) ($_GET['service'] ?? 0);
+
+function hetznercloud_ConsoleDeny($message)
+{
+    http_response_code(403);
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<!doctype html><meta charset="utf-8"><title>Console</title>'
+        . '<body style="font:15px/1.5 system-ui,sans-serif;background:#0d1017;color:#e7eaf0;display:grid;place-items:center;height:100vh;margin:0">'
+        . '<div style="text-align:center;max-width:420px;padding:24px">'
+        . '<h1 style="font-size:18px;margin:0 0 8px">Console unavailable</h1>'
+        . '<p style="margin:0;color:#98a2b3">' . htmlspecialchars($message) . '</p></div></body>';
+    exit;
+}
+
+if (!$serviceId) {
+    hetznercloud_ConsoleDeny('No service specified.');
+}
+
+$session = $_SESSION['hetznercloud_console'][$serviceId] ?? null;
+
+if (!$session || ($session['expires'] ?? 0) < time()) {
+    unset($_SESSION['hetznercloud_console'][$serviceId]);
+    hetznercloud_ConsoleDeny('This console session has expired. Open it again from the service page.');
+}
+
+// The session entry is only created for a logged-in owner, but re-check that a
+// client is still signed in so a stale browser tab cannot be replayed.
+$loggedInClient = hetznercloud_CurrentClientId();
+$adminId = hetznercloud_CurrentAdminId();
+
+if (!$loggedInClient && !$adminId) {
+    hetznercloud_ConsoleDeny('Please log in first.');
+}
+
+if ($loggedInClient) {
+    try {
+        $ownerId = (int) \WHMCS\Database\Capsule::table('tblhosting')->where('id', $serviceId)->value('userid');
+    } catch (\Exception $e) {
+        $ownerId = 0;
+    }
+
+    if ($ownerId !== $loggedInClient) {
+        hetznercloud_ConsoleDeny('This service does not belong to your account.');
+    }
+}
+
+$host = (string) $session['host'];
+$password = (string) $session['password'];
+$name = (string) ($session['name'] ?? 'server');
+
+?><!doctype html>
+<html lang="en">
 <head>
-    <title>noVNC</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="stylesheet" href="./noVNC/app/styles/lite.css">
-    <script src="./noVNC/vendor/promise.js"></script>
-    <script type="module">
-        window._noVNC_has_module_support = true;
-    </script>
-    <script>
-        window.addEventListener("load", function() {
-            if (window._noVNC_has_module_support) return;
-            var loader = document.createElement("script");
-            loader.src = "./noVNC/vendor/browser-es-module-loader/dist/browser-es-module-loader.js";
-            document.head.appendChild(loader);
-        });
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title><?= htmlspecialchars($name) ?> — Console</title>
+<style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: #0d1017; color: #e7eaf0;
+        font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    #bar { display: flex; align-items: center; gap: 10px; padding: 8px 14px;
+        background: #151a23; border-bottom: 1px solid #262d3a; }
+    #bar strong { font-size: 13px; }
+    #state { color: #98a2b3; font-size: 12px; margin-inline-end: auto; }
+    button { padding: 6px 12px; border: 1px solid #262d3a; border-radius: 8px; background: #1c222d;
+        color: #e7eaf0; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+    button:hover:not(:disabled) { background: #262d3a; }
+    button:disabled { opacity: .45; cursor: default; }
+    button.accent { background: #d50c2d; border-color: #d50c2d; }
+    #screen { position: absolute; inset: 45px 0 0; background: #000; }
+    #dot { width: 9px; height: 9px; border-radius: 50%; background: #f79009; }
+    #dot.ok { background: #12b76a; } #dot.bad { background: #f04438; }
 
-    <!-- actual script modules -->
-    <script type="module" crossorigin="anonymous">
-        // Load supporting scripts
-        import * as WebUtil from './noVNC/app/webutil.js';
-        import RFB from './noVNC/core/rfb.js';
-
-        var rfb;
-        var desktopName;
-
-        function updateDesktopName(e) {
-            desktopName = e.detail.name;
-        }
-        function credentials(e) {
-            var html;
-
-            var form = document.createElement('form');
-            form.innerHTML = '<label></label>';
-            form.innerHTML += '<input type=password size=10 id="password_input">';
-            form.onsubmit = setPassword;
-
-            // bypass status() because it sets text content
-            document.getElementByName('noVNC_status_bar').setAttribute("class", "noVNC_status_warn");
-            document.getElementById('noVNC_status').innerHTML = '';
-            document.getElementById('noVNC_status').appendChild(form);
-            document.getElementById('noVNC_status').querySelector('label').textContent = 'Password Required: ';
-        }
-        function setPassword() {
-            rfb.sendCredentials({ password: document.getElementById('password_input').value });
-            return false;
-        }
-        function sendCtrlAltDel() {
-            rfb.sendCtrlAltDel();
-            return false;
-        }
-        function machineShutdown() {
-            rfb.machineShutdown();
-            return false;
-        }
-        function machineReboot() {
-            rfb.machineReboot();
-            return false;
-        }
-        function machineReset() {
-            rfb.machineReset();
-            return false;
-        }
-        function status(text, level) {
-            switch (level) {
-                case 'normal':
-                case 'warn':
-                case 'error':
-                    break;
-                default:
-                    level = "warn";
-            }
-    //        document.getElementByName('noVNC_status_bar').className = "noVNC_status_" + level;
-            document.getElementById('noVNC_status').textContent = text;
-        }
-
-        function connected(e) {
-            document.getElementById('sendCtrlAltDelButton').disabled = false;
-            if (WebUtil.getConfigVar('encrypt',
-                                     (window.location.protocol === "https:"))) {
-                status("Connected (encrypted) to " + desktopName, "normal");
-            } else {
-                status("Connected (unencrypted) to " + desktopName, "normal");
-            }
-        }
-
-        function disconnected(e) {
-            document.getElementById('sendCtrlAltDelButton').disabled = true;
-            updatePowerButtons();
-            if (e.detail.clean) {
-                status("Disconnected", "normal");
-            } else {
-                status("Something went wrong, connection is closed", "error");
-            }
-        }
-
-        function updatePowerButtons() {
-            var powerbuttons;
-            powerbuttons = document.getElementById('noVNC_power_buttons');
-            if (rfb.capabilities.power) {
-                powerbuttons.className= "noVNC_shown";
-            } else {
-                powerbuttons.className = "noVNC_hidden";
-            }
-        }
-
-        document.getElementById('sendCtrlAltDelButton').onclick = sendCtrlAltDel;
-        document.getElementById('machineShutdownButton').onclick = machineShutdown;
-        document.getElementById('machineRebootButton').onclick = machineReboot;
-        document.getElementById('machineResetButton').onclick = machineReset;
-
-        WebUtil.init_logging(WebUtil.getConfigVar('logging', 'warn'));
-        document.title = WebUtil.getConfigVar('title', 'noVNC');
-        // By default, use the host and port of server that served this file
-        var host = WebUtil.getConfigVar('host', "<?php echo $hostVal ?>");
-      //  console.log(host);
-        var port = WebUtil.getConfigVar('port', window.location.port);
-
-        // if port == 80 (or 443) then it won't be present and should be
-        // set manually
-        if (!port) {
-            if (window.location.protocol.substring(0,5) == 'https') {
-                port = 443;
-            }
-            else if (window.location.protocol.substring(0,4) == 'http') {
-                port = 80;
-            }
-        }
-
-        var password = WebUtil.getConfigVar('password', "<?php echo $passwordVal ?>");
-      //  console.log(password);
-        var path = WebUtil.getConfigVar('path', '');
-        var token = WebUtil.getConfigVar('token', null);
-        if (token) {
-            // if token is already present in the path we should use it
-            path = WebUtil.injectParamIfMissing(path, "token", token);
-
-            WebUtil.createCookie('token', token, 1)
-        }
-
-        (function() {
-
-            status("Connecting", "normal");
-
-            if ((!host) || (!port)) {
-                status('Must specify host and port in URL', 'error');
-            }
-
-            var url;
-
-            if (WebUtil.getConfigVar('encrypt',
-                                     (window.location.protocol === "https:"))) {
-                url = 'wss';
-            } else {
-                url = 'wss';
-            }
-
-            //url += '://' + host;
-            url += '://' + host.slice(5) ;
-            if(port) {
-            //    url += ':' + port;
-            }
-          //  url += '&token=' + token;
-
-            rfb = new RFB(document.body, url,
-                          { repeaterID: WebUtil.getConfigVar('repeaterID', ''),
-                            shared: WebUtil.getConfigVar('shared', true),
-                            credentials: { password: password } });
-            rfb.viewOnly = WebUtil.getConfigVar('view_only', false);
-            rfb.addEventListener("connect",  connected);
-            rfb.addEventListener("disconnect", disconnected);
-            rfb.addEventListener("capabilities", function () { updatePowerButtons(); });
-            rfb.addEventListener("credentialsrequired", credentials);
-            rfb.addEventListener("desktopname", updateDesktopName);
-            rfb.scaleViewport = WebUtil.getConfigVar('scale', false);
-            rfb.resizeSession = WebUtil.getConfigVar('resize', false);
-        })();
-    </script>
+    #pastebox { position: absolute; inset: 45px 0 0; display: none; place-items: center;
+        background: rgba(13, 16, 23, .8); backdrop-filter: blur(3px); z-index: 5; }
+    #pastebox.open { display: grid; }
+    #pastebox > div { width: min(560px, calc(100% - 40px)); display: grid; gap: 10px; padding: 20px;
+        background: #151a23; border: 1px solid #262d3a; border-radius: 12px; }
+    #pastebox h2 { margin: 0; font-size: 15px; }
+    #pastebox p { margin: 0; font-size: 12px; color: #98a2b3; }
+    #pastetext { width: 100%; min-height: 130px; padding: 10px; border-radius: 8px;
+        border: 1px solid #262d3a; background: #0d1017; color: #e7eaf0;
+        font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }
+    #pastebox .row { display: flex; justify-content: flex-end; gap: 8px; }
+</style>
 </head>
-
 <body>
-  <div id="noVNC_status_bar">
-    <div id="noVNC_left_dummy_elem"></div>
-    <div id="noVNC_status">Loading</div>
-    <div id="noVNC_buttons">
-      <input type=button value="Send Ctrl+Alt+Delete"
-             id="sendCtrlAltDelButton" class="noVNC_shown">
-      <span id="noVNC_power_buttons" class="noVNC_hidden">
-        <input type=button value="Shutdown"
-               id="machineShutdownButton">
-        <input type=button value="Reboot"
-               id="machineRebootButton">
-        <input type=button value="Reset"
-               id="machineResetButton">
-      </span>
+
+<div id="bar">
+    <span id="dot"></span>
+    <strong><?= htmlspecialchars($name) ?></strong>
+    <span id="state">Connecting…</span>
+    <button id="cad" disabled>Ctrl+Alt+Del</button>
+    <button id="clip" disabled>Paste</button>
+    <button id="full">Fullscreen</button>
+    <button id="again" class="accent" hidden>Reconnect</button>
+</div>
+<div id="screen"></div>
+
+<div id="pastebox">
+    <div>
+        <h2>Send text to the console</h2>
+        <p>Paste with Ctrl+V (Cmd+V) below and press Send — the text is typed into the console one
+           keystroke at a time, which is the only thing a bare VM console understands.</p>
+        <textarea id="pastetext" spellcheck="false" autocomplete="off"></textarea>
+        <div class="row">
+            <button id="pastecancel">Cancel</button>
+            <button id="pastesend" class="accent">Send</button>
+        </div>
     </div>
-  </div>
+</div>
+
+<script type="module">
+import RFB from './noVNC/core/rfb.js';
+
+const url = <?= json_encode($host, JSON_UNESCAPED_SLASHES) ?>;
+const password = <?= json_encode($password) ?>;
+
+const screen = document.getElementById('screen');
+const state = document.getElementById('state');
+const dot = document.getElementById('dot');
+const cad = document.getElementById('cad');
+const clip = document.getElementById('clip');
+let rfb = null;
+
+function status(text, tone) {
+    state.textContent = text;
+    dot.className = tone || '';
+}
+
+function connect() {
+    document.getElementById('again').hidden = true;
+    status('Connecting…');
+
+    rfb = new RFB(screen, url, { credentials: { password: password } });
+    rfb.scaleViewport = true;
+    rfb.resizeSession = false;
+    rfb.clipViewport = true;
+
+    rfb.addEventListener('connect', () => {
+        status('Connected', 'ok');
+        cad.disabled = false;
+        clip.disabled = false;
+    });
+
+    rfb.addEventListener('disconnect', (event) => {
+        status(event.detail.clean ? 'Disconnected' : 'Connection lost', 'bad');
+        cad.disabled = true;
+        clip.disabled = true;
+        document.getElementById('again').hidden = false;
+    });
+
+    rfb.addEventListener('securityfailure', (event) => {
+        status('Authentication failed: ' + (event.detail.reason || ''), 'bad');
+    });
+}
+
+cad.addEventListener('click', () => rfb && rfb.sendCtrlAltDel());
+
+/* ---- paste ------------------------------------------------------------
+   clipboardPasteFrom() only hands the text to the guest's clipboard, and a bare
+   VM console has no clipboard manager to read it — so nothing appears. Type the
+   characters as key events instead, which is what the console actually accepts.
+------------------------------------------------------------------------- */
+
+const XK_Return = 0xFF0D;
+const XK_Tab = 0xFF09;
+
+function keysymFor(char) {
+    const code = char.codePointAt(0);
+
+    if (char === '\n' || char === '\r') { return XK_Return; }
+    if (char === '\t') { return XK_Tab; }
+    if (code < 0x20) { return null; }          // other control characters: skip
+
+    // Latin-1 maps straight onto keysyms; everything else uses the Unicode range.
+    return code < 0x100 ? code : 0x01000000 + code;
+}
+
+async function typeText(text) {
+    if (!rfb || !text) { return; }
+
+    rfb.focus();
+
+    const chars = Array.from(text.replace(/\r\n/g, '\n'));
+    let sent = 0;
+
+    for (const char of chars) {
+        const keysym = keysymFor(char);
+        if (keysym === null) { continue; }
+
+        rfb.sendKey(keysym, null);
+        sent++;
+
+        // Let the guest's tty keep up; a burst of hundreds gets dropped.
+        if (sent % 16 === 0) {
+            status('Typing… ' + sent + '/' + chars.length, 'normal');
+            await new Promise(resolve => setTimeout(resolve, 16));
+        }
+    }
+
+    status('Connected', 'ok');
+}
+
+const pastebox = document.getElementById('pastebox');
+const pastetext = document.getElementById('pastetext');
+
+async function openPaste() {
+    pastetext.value = '';
+    pastebox.classList.add('open');
+    pastetext.focus();
+
+    // Pre-fill when the browser allows it; otherwise the user just pastes in.
+    try {
+        const text = await navigator.clipboard.readText();
+        if (text) { pastetext.value = text; pastetext.select(); }
+    } catch (e) { /* no permission, or Firefox: the textarea still works */ }
+}
+
+function closePaste() {
+    pastebox.classList.remove('open');
+    if (rfb) { rfb.focus(); }
+}
+
+clip.addEventListener('click', openPaste);
+document.getElementById('pastecancel').addEventListener('click', closePaste);
+
+document.getElementById('pastesend').addEventListener('click', () => {
+    const text = pastetext.value;
+    closePaste();
+    typeText(text);
+});
+
+pastetext.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') { closePaste(); }
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        const text = pastetext.value;
+        closePaste();
+        typeText(text);
+    }
+});
+
+document.getElementById('full').addEventListener('click', () => {
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else { document.documentElement.requestFullscreen(); }
+});
+
+document.getElementById('again').addEventListener('click', () => {
+    // Hetzner keeps the session alive for ~10 minutes; after that reopen the
+    // console from the service page to get fresh credentials.
+    connect();
+});
+
+connect();
+</script>
 </body>
 </html>

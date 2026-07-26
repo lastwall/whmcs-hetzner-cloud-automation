@@ -1,0 +1,6 @@
+# Runtime API response cache, regenerated on demand
+modules/servers/hetznercloud/cache/
+
+# Build artefacts
+modules.zip
+*.zip
