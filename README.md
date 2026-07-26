@@ -14,15 +14,20 @@ Your staff get **the same panel** on the admin service page, and an addon that s
 from an API token — including generating one WHMCS product per Hetzner plan, priced.
 
 ![Client panel — overview](docs/screenshots/client-overview.png)
+<p align="center"><em>The client panel: status, power, tabs, specs, access details and bandwidth</em></p>
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/client-graphs.png" alt="Metrics dashboard"><br><em>Metrics dashboard — five charts, one API call</em></td>
-<td width="50%"><img src="docs/screenshots/client-network.png" alt="Network tab"><br><em>Floating IPs, reverse DNS and private networks</em></td>
+<td width="50%"><img src="docs/screenshots/client-graphs.png" alt="Metrics dashboard"><br><em><b>Metrics dashboard</b> — five charts from one API call, stepped lines, current/avg/peak</em></td>
+<td width="50%"><img src="docs/screenshots/client-rebuild.png" alt="Rebuild tab"><br><em><b>Rebuild</b> — every Hetzner image, searchable, with a typed confirmation</em></td>
 </tr>
 <tr>
-<td><img src="docs/screenshots/admin-service.png" alt="Admin service page"><br><em>Admin service page — the same panel, every feature unlocked</em></td>
-<td><img src="docs/screenshots/addon-create.png" alt="Product generator"><br><em>Build a WHMCS product from every Hetzner plan</em></td>
+<td><img src="docs/screenshots/admin-service.png" alt="Admin service page"><br><em><b>Admin service page</b> — the same panel, every feature unlocked for staff</em></td>
+<td><img src="docs/screenshots/admin-graphs.png" alt="Admin graphs"><br><em><b>Admin graphs</b> — staff get the full dashboard too</em></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/addon-products.png" alt="Feature matrix"><br><em><b>Feature matrix</b> — 21 switches per product, enforced in UI and API</em></td>
+<td><img src="docs/screenshots/addon-create.png" alt="Product generator"><br><em><b>Product generator</b> — a WHMCS product per Hetzner plan, priced</em></td>
 </tr>
 </table>
 
@@ -163,8 +168,6 @@ Settings on the addon's own configuration screen:
 | Status refresh | Client-side polling interval in seconds (0 disables) |
 | API timeout | Max seconds per Hetzner call, always capped below PHP's `max_execution_time` |
 
-![Addon status tab](docs/screenshots/addon-status.png)
-
 ### 3. Connect the API token
 
 **Addons → Hetzner Cloud → Connection.** Paste a token created in the Hetzner Console under
@@ -194,6 +197,8 @@ monthly price. Choose:
 | Location / OS image | Written into the new product's module settings |
 | Markup % | Sale price = Hetzner price × (1 + markup). The **Your price** column updates as you type |
 | Setup fee, hostname prefix, auto setup | Applied to every product created in this run |
+
+![Product generator](docs/screenshots/addon-create.png)
 
 Press **Create** on one row, or tick several and press **Create selected products**. Each product is
 created with the module and server group selected, all module settings filled in, the `serverID` and
@@ -257,6 +262,8 @@ with a panel per product:
 | Network | Show floating IPs, let the client order floating IPs, reverse DNS, private networks, firewalls |
 | Access | SSH keys, add-ons tab |
 
+![Client area feature matrix](docs/screenshots/addon-products.png)
+
 Everything defaults to **on** except the two marked *billable*, so a product an admin never touched
 still gets the full panel. Unticking a box hides the section **and** rejects the matching API call, so
 it cannot be reached by crafting a request.
@@ -311,6 +318,8 @@ The Graphs tab is a real monitoring dashboard rather than one chart with a toggl
 - **Current, average and peak** per series, as text beside the colour key.
 - **Table view** — one button swaps every chart for its data table, so no value is hover-only.
 - **Auto refresh** every 60 s while the tab is open; a refresh dims the charts instead of flashing.
+
+![Metrics dashboard](docs/screenshots/client-graphs.png)
 
 Colours are a two-slot categorical palette validated for colourblind separation against this module's
 own light and dark surfaces (worst adjacent pair ΔE 24.7 light / 26.8 dark under simulated

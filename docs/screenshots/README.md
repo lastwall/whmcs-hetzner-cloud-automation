@@ -1,16 +1,24 @@
 # Screenshots
 
-The main README links to the files below. Drop a PNG at each path and it renders automatically.
-Until then those images show as broken on GitHub, so add them before publishing a release.
+Images used by the main [README](../../README.md).
 
-| File | What to capture | Where |
-|------|-----------------|-------|
-| `client-overview.png` | Client panel, Overview tab — hero, tabs, specs and access details | Client area → service → Product Details |
-| `client-graphs.png` | Client panel, Graphs tab — the five stacked charts at 24 hours | same page, Graphs tab |
-| `client-network.png` | Client panel, Network tab — floating IPs, reverse DNS, private networks | same page, Network tab |
-| `admin-service.png` | Admin service page — the facts strip plus the same panel | Clients → service → Hetzner Cloud |
-| `addon-status.png` | Addon Status tab — stat cards and the getting-started checklist | Addons → Hetzner Cloud |
-| `addon-create.png` | Addon Create products tab — the plan table with live pricing | Addons → Hetzner Cloud → Create products |
+| File | Shows | Captured from |
+|------|-------|---------------|
+| `client-overview.png` | Client panel, Overview tab — hero, tabs, specs, access details, bandwidth | Client area → service → Product Details |
+| `client-graphs.png` | Client panel, Graphs tab — CPU and network charts at 24 hours | same page, Graphs tab |
+| `client-rebuild.png` | Client panel, Rebuild tab — searchable image picker | same page, Rebuild tab |
+| `admin-service.png` | Admin service page — module commands, facts strip and the panel | Clients → service → Hetzner Cloud |
+| `admin-graphs.png` | Admin service page, Graphs tab | same page |
+| `addon-products.png` | Addon Products tab — per-product feature matrix and limits | Addons → Hetzner Cloud → Products |
+| `addon-create.png` | Addon Create products tab — plan table with live pricing | Addons → Hetzner Cloud → Create products |
 
-Tips: use a light theme, ~1400px wide, and crop to the panel rather than the whole browser.
-Blank out any real IP address, hostname or password before publishing.
+## Replacing or adding one
+
+Keep the file names — the README links to them directly. Use lowercase `.png`: GitHub serves paths
+case-sensitively, so `Foo.PNG` returns 404 against a link written as `foo.png`.
+
+Blank out any real IP address, hostname, server id or password before committing. Light theme and
+roughly 1400 px wide match the existing set.
+
+Worth adding if you extend the set: the Network tab (floating IPs, reverse DNS, private networks),
+the Firewall rule editor, and the addon Status tab.
